@@ -50,10 +50,11 @@
   margin-top: 10px;
 }
 
-.button-container {
-  margin: 10px;
-}
-
 .popup-link {
   color: white;
+}
+
+.dropdown {
+  color: black;
+  width: 250px;
 }
