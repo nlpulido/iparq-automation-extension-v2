@@ -2,31 +2,28 @@ import React, { useState } from 'react';
 import Select from 'react-select';
 import './Popup.css';
 
-
 const portalOptions = [
   { value: "main", label: "Main Portal" },
   { value: "affiliate", label: "Affiliate Portal" }
-]
-
-function initializeDropdown() {
-
-  // query our current tab & set our dropdown accordingly
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    if (tabs[0].title.includes("AFFILIATES")) {
-      document.getElementById("permit-portal").value = "affiliate";
-    }
-  });
-
-}
+];
 
 const Popup = () => {
-  let [portal, setPortal] = useState("main");
+  let [portal, setPortal] = useState("");
+
+  function handlePortalChange(portal) {
+    setPortal(portal);
+  }
 
   return (
     <div className="App">
       <header className="App-header">
         <h1>iPARQ Permit Validator</h1>
-        <Select options={portalOptions} className="dropdown"/>
+        <Select 
+          options={portalOptions} 
+          className="dropdown" 
+          defaultValue={portal}
+          onChange={(selected) => handlePortalChange(selected)}
+        />
         <div className="popup-buttons">
           <button className="button-container" id="validateBtn">Validate Permits</button>
         </div>
