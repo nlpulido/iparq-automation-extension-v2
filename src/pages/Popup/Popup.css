@@ -43,3 +43,17 @@
     transform: rotate(360deg);
   }
 }
+
+.popup-buttons {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.button-container {
+  margin: 10px;
+}
+
+.popup-link {
+  color: white;
+}

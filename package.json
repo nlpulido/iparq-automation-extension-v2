@@ -1,11 +1,11 @@
 {
-  "name": "chrome-extension-boilerplate-react",
-  "version": "4.0.1",
-  "description": "A chrome extension boilerplate built with React 17 and Webpack 5",
+  "name": "iparq-permit-automation",
+  "version": "0.1.0",
+  "description": "A chrome extension built to automate the process of verifying permits",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lxieyang/chrome-extension-boilerplate-react.git"
+    "url": "https://github.com/nlpulido/iparq-automation-extension.git"
   },
   "scripts": {
     "build": "node utils/build.js",
