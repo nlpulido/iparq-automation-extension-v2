@@ -41,15 +41,16 @@ if (window.location.href === HOME) {
   // find the permit tables
   var permit_table_rows = document.getElementById('st_setuppermittypes').rows;
 
+  // define a map of permit titles to their unique id's
+  let uniqueIdMap = new Map();
 
   // loop through each row starting past the Do Not Ticket
   for (var i = 3; i < permit_table_rows.length; i++) {
-    // grab the current row 
+    // grab the current row's data
     var curr_row = permit_table_rows.item(i);
-
-    // otherwise, log the inner text
     var cells = curr_row.cells;
     var permit_title = cells.item(0).innerText;
+    var permit_uniqueID = curr_row.className.match(/\d{4}/);
 
     // if we encounter the row with the remove items, we break
     if (permit_title === "Show Removed Items") {
@@ -58,9 +59,10 @@ if (window.location.href === HOME) {
       continue;
     }
 
-    console.log(permit_title);
+    uniqueIdMap.set(permit_title, permit_uniqueID[0]);
+    console.log(`${permit_title}: ${permit_uniqueID} added`);
   }
-
+  console.log(uniqueIdMap);
 }
 
 chrome.runtime.onMessage.addListener(

@@ -12,18 +12,12 @@ const Popup = () => {
 
   function handlePortalChange(portal) {
     setPortal(portal);
-
-    // send a message to the content script to change the portal
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, {type: portal.value});
-    });
-
   }
 
   function startValidation() {
     // send a message to the content script to change the portal
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, {type: "start"});
+      chrome.tabs.sendMessage(tabs[0].id, {type: portal.value});
     });
   }
 
