@@ -32,49 +32,70 @@ function navigatePermitTypes() {
 
 function startValidator() {
   console.log("Starting validator...");
-  // navigatePermitTypes();
+
+  // set our local storage key to running (managing state)
+  chrome.storage.local.set({"automation_running": true}, () => {
+    console.log(`automation_running (set): true`);
+  });
 }
 
-if (window.location.href === HOME) {
-  navigatePermitTypes();
-} else if (window.location.href === PERMIT_TYPES) {
-  // find the permit tables
-  var permit_table_rows = document.getElementById('st_setuppermittypes').rows;
+function stopValidator() {
+  console.log("Stopping validator...");
 
-  // define a map of permit titles to their unique id's
-  let uniqueIdMap = new Map();
+  // set our local storage key to running (managing state)
+  chrome.storage.local.set({"automation_running": false}, () => {
+    console.log(`automation_running (set): false`);
+  });
+}
 
-  // loop through each row starting past the Do Not Ticket
-  for (var i = 3; i < permit_table_rows.length; i++) {
-    // grab the current row's data
-    var curr_row = permit_table_rows.item(i);
-    var cells = curr_row.cells;
-    var permit_title = cells.item(0).innerText;
-    var permit_uniqueID = curr_row.className.match(/\d{4}/);
+// perform a get on local storage
+chrome.storage.local.get(['automation_running'], (result) => {
+  console.log(`automation_running (get): ${result.automation_running}`);
 
-    // if we encounter the row with the remove items, we break
-    if (permit_title === "Show Removed Items") {
-      break;
-    } else if (permit_title === "Do Not Ticket") {
-      continue;
+  if (result.automation_running === true) {
+    if (window.location.href === HOME) {
+      navigatePermitTypes();
+    } else if (window.location.href === PERMIT_TYPES) {
+      // find the permit tables
+      var permit_table_rows = document.getElementById('st_setuppermittypes').rows;
+    
+      // define a map of permit titles to their unique id's
+      let uniqueIdMap = new Map();
+    
+      // loop through each row starting past the Do Not Ticket
+      for (var i = 3; i < permit_table_rows.length; i++) {
+        // grab the current row's data
+        var curr_row = permit_table_rows.item(i);
+        var cells = curr_row.cells;
+        var permit_title = cells.item(0).innerText;
+        var permit_uniqueID = curr_row.className.match(/\d{4}/);
+    
+        // if we encounter the row with the remove items, we break
+        if (permit_title === "Show Removed Items") {
+          break;
+        } else if (permit_title === "Do Not Ticket") {
+          continue;
+        }
+    
+        uniqueIdMap.set(permit_title, permit_uniqueID[0]);
+        console.log(`${permit_title}: ${permit_uniqueID} added`);
+      }
+      console.log(uniqueIdMap);
     }
-
-    uniqueIdMap.set(permit_title, permit_uniqueID[0]);
-    console.log(`${permit_title}: ${permit_uniqueID} added`);
   }
-  console.log(uniqueIdMap);
-}
+
+})
 
 chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
+  function(request) {
     if (request.type == "main") {
+      startValidator();
       switchToMainPortal();
     } else if (request.type == "affiliate") {
+      startValidator();
       switchToAffiliatePortal();
     } else if (request.type == "interrupt") {
-      console.log("Interrupting validator...");
-    } else if (request.type == "start") {
-      startValidator();
+      stopValidator();
     } else {
       console.log(`Got an unknown type: ${request.type}`)
     }
