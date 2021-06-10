@@ -52,10 +52,14 @@ function stopValidator() {
 chrome.storage.local.get(['automation_running'], (result) => {
   console.log(`automation_running (get): ${result.automation_running}`);
 
+  // if our automation key is set to true / we're running
   if (result.automation_running === true) {
+
+    // if we're on the home page, go to the permit types
     if (window.location.href === HOME) {
       navigatePermitTypes();
     } else if (window.location.href === PERMIT_TYPES) {
+      
       // find the permit tables
       var permit_table_rows = document.getElementById('st_setuppermittypes').rows;
     
@@ -78,9 +82,16 @@ chrome.storage.local.get(['automation_running'], (result) => {
         }
     
         uniqueIdMap.set(permit_title, permit_uniqueID[0]);
-        console.log(`${permit_title}: ${permit_uniqueID} added`);
+        // console.log(`${permit_title}: ${permit_uniqueID} added`);
       }
+
+      // print out the map
       console.log(uniqueIdMap);
+
+      // loop through each mapping
+      const currURL = "https://admin.thepermitstore.com/setup/permitsessions.php?permission_master_ID=" + uniqueIdMap.get('F/S 1-DAY Part Time');
+      chrome.runtime.sendMessage({ url:currURL });
+
     }
   }
 
